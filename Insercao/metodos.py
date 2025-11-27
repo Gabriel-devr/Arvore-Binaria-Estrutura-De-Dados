@@ -45,3 +45,124 @@ class Tree:
                 return "Palavra existente"
 
         return f"Palavra Inexistente {word}"
+
+    def ocorrency(self):
+        word = input()
+        trackNode = self.root
+        counter = 0
+        while(trackNode):
+            parentTrackNode = trackNode
+            if (word<parentTrackNode.data):
+                trackNode = trackNode.left
+            elif (word>=parentTrackNode.data):
+                if (word == trackNode.data):
+                    counter +=1
+                trackNode = trackNode.right
+        if (counter==0):
+            return f"Palavra inexistente: {word}"
+        else:
+            return f"Palavra existente: {word} {counter}"
+    # ========================================================================
+    def ordemAlfabetica(self): #4 QUESTÃO OK com print dentro da funcao
+        l1=input("letra 1")
+        l2=input('letra 2')
+        noAtual=self.root
+        if (noAtual):
+            self.ordenada(noAtual) 
+            print('------------------------------')
+            self.ordenadaMargem(noAtual,l1,l2)
+        else:
+            print('lista vazia')
+
+    def ordenada(self,noAtual): #Função auxiliar 4
+        if(noAtual):
+            self.ordenada(noAtual.left)
+            print(noAtual.data)
+            self.ordenada(noAtual.right)
+    
+    def ordenadaMargem(self,noAtual,l1,l2): #Função auxiliar 4 
+        if (noAtual is None):
+            return 
+
+        self.ordenadaMargem(noAtual.left,l1,l2)
+        if(noAtual.data[0]>=l1 and noAtual.data[0]<=l2):
+            print(noAtual.data)
+        self.ordenadaMargem(noAtual.right,l1,l2)
+    # ========================================================================
+    #------------------------------------------------------------
+
+    def contarNivel(self,No,NivelAtual,NivelMeta): #QUESTÃO 6 OK PRINT FORA
+        if No is None:
+            return 0
+        if (NivelAtual == NivelMeta):
+            return 1
+        qtdEsquerda = self.contarNivel(No.left, NivelAtual + 1, NivelMeta)
+        qtdDireita = self.contarNivel(No.right, NivelAtual + 1, NivelMeta)
+
+        return qtdEsquerda + qtdDireita
+    
+    def imprimePalavrasPorNivel(self,No, NivelAtual, NivelMeta): #QUESTÃO 6 OK COM PRINT DENTRO
+        if No is None:
+            return
+        if (NivelAtual == NivelMeta):
+            print(No.data)
+        esquerda = self.imprimePalavrasPorNivel(No.left, NivelAtual + 1, NivelMeta)
+        direita = self.imprimePalavrasPorNivel(No.right, NivelAtual + 1, NivelMeta)
+
+    #---------------------------------------------------------------
+    def palavrasNoCaminho(self): # QUESTÃO 7 OK PRINT NA FUNCAO
+        word = input()
+        while(currentNode):
+            parentNode = currentNode
+            if(word < parentNode.data):
+                currentNode = currentNode.left
+            elif(word>parentNode.data):
+                currentNode = currentNode.right
+            else:
+                print('palavras no caminho:')
+                currentNode = self.root
+                while(currentNode):
+                    parentNode = currentNode
+                    print(parentNode.data)
+                    if(word < parentNode.data):
+                        currentNode = currentNode.left
+                    elif (word > parentNode.data):
+                        currentNode = currentNode.right
+                    else:
+                        return
+
+        return print(f"palavra inexistente: {word}")   
+    #---------------------------------------------------------------
+
+    def alturaDaArvore(self): # QUESTÃO 8 OK PRINT FORA DA FUNCAO
+        
+        if self.root is None:
+            return 0
+
+        esquerda=self.alturaDaArvore(self.root.left)
+        direita=self.alturaDaArvore(self.root.right)
+            
+        if (esquerda > direita):
+            return 1 + esquerda
+        else:
+            return 1 + direita
+
+    def imprimeArvore(self,No): #QUESTÃO 9 OK PRINT DENTRO
+        if (No is None):
+            if (No == self.root):
+                print("arvore vazia")
+            return
+        
+        if (No.left):
+            palavraEsquerda = No.left.data
+        else:
+            palavraEsquerda = "nil"
+        if (No.right):
+            palavraDireita = No.right.data
+        else:
+            palavraDireita = "nil"
+
+        print(f'palavra {No.data} fesq: {palavraEsquerda} fdir: {palavraDireita}')
+
+        self.imprimeArvore(No.left)
+        self.imprimeArvore(No.right)
