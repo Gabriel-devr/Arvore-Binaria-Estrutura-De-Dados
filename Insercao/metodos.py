@@ -8,13 +8,13 @@ class Node:
 class Tree:
     def __init__(self):
         self.root=None
-
-    def insere_palavra(self): #1 QUESTÃO OK com printa fora da funcao
-        word = input()
+#========================================================================    
+    #1) Primeiramente passei uma string como argumento do método, com ela fiz a instância do objeto usando esse argumento. Após inserir o primeiro nó na raiz, as variáveis auxiliares percorrem a arvore conforme as condicionais até então poder inserir o novo nó.
+    def insertWord(self,word): #1 
         newNode=Node(word)
         if(self.root is None):
             self.root=newNode
-            return f"Palavra inserida: {word}"
+            return f"palavra inserida: {word}"
         currentNode = self.root
         while(currentNode):
             parentTrackNode = currentNode
@@ -23,17 +23,16 @@ class Tree:
                 if(currentNode is None):
                     parentTrackNode.left = newNode
                     newNode.parent=parentTrackNode
-                    return f"Palavra inserida {word}"
-                    
+                    return f"palavra inserida: {word}"   
             else:
                 currentNode = currentNode.right 
                 if(currentNode is None):
                     parentTrackNode.right = newNode
                     newNode.parent=parentTrackNode
-                    return f"Palavra inserida {word}"
-    
-    def consulta(self):#2 QUESTÃO OK com print fora da funcao
-        word = input()
+                    return f"palavra inserida: {word}"
+#========================================================================    
+    #2) Ao criar variáveis que nos permitem verificar se existe ou não determinado dado, podemos então retornar essa mensagem no terminal.
+    def consult(self,word):#2 
         trackNode = self.root
         while(trackNode):
             parentTrackNode = trackNode
@@ -42,12 +41,12 @@ class Tree:
             elif(word>parentTrackNode.data):
                 trackNode = trackNode.right
             else:
-                return "Palavra existente"
+                return f"palavra existente: {word}"
 
-        return f"Palavra Inexistente {word}"
-
-    def ocorrency(self):
-        word = input()
+        return f"palavra inexistente: {word}"
+#========================================================================    
+    #3) Aqui fazemos uma consulta, mas dessa vez ao percorrer contamos a quantidaade de vezes que determinado dado aparece na nossa árvore.
+    def occurrence(self,word):#3
         trackNode = self.root
         counter = 0
         while(trackNode):
@@ -59,110 +58,146 @@ class Tree:
                     counter +=1
                 trackNode = trackNode.right
         if (counter==0):
-            return f"Palavra inexistente: {word}"
+            print(f"palavra inexistente: {word}")
         else:
-            return f"Palavra existente: {word} {counter}"
-    # ========================================================================
-    def ordemAlfabetica(self): #4 QUESTÃO OK com print dentro da funcao
-        l1=input("letra 1")
-        l2=input('letra 2')
-        noAtual=self.root
-        if (noAtual):
-            self.ordenada(noAtual) 
-            print('------------------------------')
-            self.ordenadaMargem(noAtual,l1,l2)
+            print(f"palavra existente: {word} {counter}")
+#========================================================================    
+    #4) Para imprimir a nossa árvore com delimitadores e em ordem alfabetica optei por usar um método recursivo, assim me poupando linhas de código por meio de uma lógica baseada em stacks.
+    def alphabeticalOrder(self,l1,l2):
+        currentNode=self.root
+        if (currentNode):
+            print(f'palavras em ordem:')
+            self.ordenadaMargem(currentNode,l1,l2)
         else:
             print('lista vazia')
-
-    def ordenada(self,noAtual): #Função auxiliar 4
-        if(noAtual):
-            self.ordenada(noAtual.left)
-            print(noAtual.data)
-            self.ordenada(noAtual.right)
     
-    def ordenadaMargem(self,noAtual,l1,l2): #Função auxiliar 4 
-        if (noAtual is None):
+    def ordenadaMargem(self,currentNode,l1,l2): #Função auxiliar 4 
+        if (currentNode is None):
             return 
 
-        self.ordenadaMargem(noAtual.left,l1,l2)
-        if(noAtual.data[0]>=l1 and noAtual.data[0]<=l2):
-            print(noAtual.data)
-        self.ordenadaMargem(noAtual.right,l1,l2)
-    # ========================================================================
-    #------------------------------------------------------------
+        self.ordenadaMargem(currentNode.left,l1,l2)
+        if(currentNode.data[0]>=l1 and currentNode.data[0]<=l2):
+            print(currentNode.data)
+        self.ordenadaMargem(currentNode.right,l1,l2)
+#========================================================================
+    #5) Bom seguindo a linha de raciocinio de remoção utilizando transplante. Primeiro precisamos verificar se o nó que queremos remover está dentro da arvore e a quantidade de filhos que ele tem. Temos 3 casos possíveis de remoção: o nó que queremos eliminar com nenhum, 1 ou 2 filhos. O caso mais complicado é o de 2 filhos onde temos que realizar o transplante do sucessor com o seu filho a direita e então acertar os ponteiros do sucessor e do seu filho conforme os ponteiros do no a ser eliminado.
+    def search(self,x):
+        trackNode = self.root
+        while(trackNode):
+            parentNode = trackNode
+            if(x < parentNode.data):
+                trackNode = trackNode.left
+            elif(x > parentNode.data):
+                trackNode = trackNode.right
+            else:
+                return trackNode
 
-    def contarNivel(self,No,NivelAtual,NivelMeta): #QUESTÃO 6 OK PRINT FORA
-        if No is None:
+    def minimum(self,node):
+        while(node.left):
+            node = node.left
+        return node
+
+    def transplant(self,u,v):
+        p = u.parent
+        if(p is None):
+            self.root = v
+        elif (u==p.left):
+            p.left = v
+        else:
+            p.right = v
+        if (v is not None):
+            v.parent = p
+    
+    def delete(self,z):
+        node = self.search(z)
+        if (node):
+            if(node.left is None):
+                self.transplant(node,node.right)
+            elif (node.right is None):
+                self.transplant(node,node.left)
+            else:
+                y = self.minimum(node.right)
+                if(y != node.right):
+                    self.transplant(y, y.right)
+                    y.right = node.right
+                    y.right.parent = y
+                y.left = node.left
+                y.left.parent = y
+            print(f'palavra removida: {z}')
+        else:
+            print(f"palavra inexistente: {z}")
+#========================================================================  
+    #6) Optei por utilizar uma função recursiva para poder caminhar por toda a arvore, ou até o nível que foi escolhido, e ao final me retornar a soma recursiva dos lados, a quantidade de nos que está naquele nível. Além disso, preferi separar em 2 funções para melhor entendimento e para separar funções.   
+    def countLevel(self,node,currentNode,meta): 
+        if node is None:
             return 0
-        if (NivelAtual == NivelMeta):
+        if (currentNode == meta):
             return 1
-        qtdEsquerda = self.contarNivel(No.left, NivelAtual + 1, NivelMeta)
-        qtdDireita = self.contarNivel(No.right, NivelAtual + 1, NivelMeta)
+        qtdEsquerda = self.countLevel(node.left, currentNode + 1, meta)
+        qtdDireita = self.countLevel(node.right, currentNode + 1, meta)
 
         return qtdEsquerda + qtdDireita
     
-    def imprimePalavrasPorNivel(self,No, NivelAtual, NivelMeta): #QUESTÃO 6 OK COM PRINT DENTRO
-        if No is None:
+    def printWordByLevel(self,node, currentNode, meta): 
+        if node is None:
             return
-        if (NivelAtual == NivelMeta):
-            print(No.data)
-        esquerda = self.imprimePalavrasPorNivel(No.left, NivelAtual + 1, NivelMeta)
-        direita = self.imprimePalavrasPorNivel(No.right, NivelAtual + 1, NivelMeta)
+        if (currentNode == meta):
+            print(node.data)
+        esquerda = self.printWordByLevel(node.left, currentNode + 1, meta)
+        direita = self.printWordByLevel(node.right, currentNode + 1, meta)
 
-    #---------------------------------------------------------------
-    def palavrasNoCaminho(self): # QUESTÃO 7 OK PRINT NA FUNCAO
-        word = input()
-        while(currentNode):
-            parentNode = currentNode
-            if(word < parentNode.data):
-                currentNode = currentNode.left
-            elif(word>parentNode.data):
-                currentNode = currentNode.right
-            else:
-                print('palavras no caminho:')
-                currentNode = self.root
-                while(currentNode):
-                    parentNode = currentNode
-                    print(parentNode.data)
-                    if(word < parentNode.data):
-                        currentNode = currentNode.left
-                    elif (word > parentNode.data):
-                        currentNode = currentNode.right
-                    else:
-                        return
-
-        return print(f"palavra inexistente: {word}")   
-    #---------------------------------------------------------------
-
-    def alturaDaArvore(self): # QUESTÃO 8 OK PRINT FORA DA FUNCAO
+#========================================================================    
+    #7) A lógica foi dividida em duas partes para garantir a ordenação correta. Primeiro, eu verifico se a palavra existe na árvore. Se existir, imprimo o cabeçalho e chamo a função recursiva printPathSorted. Se o destino está à esquerda, eu visito a esquerda primeiro e só imprimo o nó atual na volta e faço o inverso caso contrário.
+    def wordsOnTheWay(self,word):
+        if not (self.search(word)):
+            print(f'palavra inexistente: {word}')
+            return
+        print('palavras no caminho:')
+        self.printPathSorted(self.root,word)
+    
+    def printPathSorted(self,node,meta):
+        if not node:
+            return
+        if (meta<node.data):
+            self.printPathSorted(node.left,meta)
+            print(node.data)
+        elif (meta>node.data):
+            print(node.data)
+            self.printPathSorted(node.right, meta)
+        else:
+            print(node.data)
+#========================================================================    
+    #8) Optei novamente por um método recursivo que irá iterar 1 a cada nível e ao final me retornar a altura exata da arvore
+    def treeHeight(self,node):
         
-        if self.root is None:
+        if node is None:
             return 0
 
-        esquerda=self.alturaDaArvore(self.root.left)
-        direita=self.alturaDaArvore(self.root.right)
+        esquerda=self.treeHeight(node.left)
+        direita=self.treeHeight(node.right)
             
         if (esquerda > direita):
             return 1 + esquerda
         else:
             return 1 + direita
-
-    def imprimeArvore(self,No): #QUESTÃO 9 OK PRINT DENTRO
-        if (No is None):
-            if (No == self.root):
+#========================================================================    
+    #9) Conforme foi proposto no item 9, foi necessário usar uma ordem de visita em pré-ordem, onde primeiro imprimo, visito recursivamente a esquerda e por último visito recursivamente a direita.
+    def printTree(self,node): 
+        if (node is None):
+            if (node == self.root):
                 print("arvore vazia")
             return
         
-        if (No.left):
-            palavraEsquerda = No.left.data
+        if (node.left):
+            palavraEsquerda = node.left.data
         else:
             palavraEsquerda = "nil"
-        if (No.right):
-            palavraDireita = No.right.data
+        if (node.right):
+            palavraDireita = node.right.data
         else:
             palavraDireita = "nil"
 
-        print(f'palavra {No.data} fesq: {palavraEsquerda} fdir: {palavraDireita}')
+        print(f'palavra: {node.data} fesq: {palavraEsquerda} fdir: {palavraDireita}')
 
-        self.imprimeArvore(No.left)
-        self.imprimeArvore(No.right)
+        self.printTree(node.left)
+        self.printTree(node.right)
