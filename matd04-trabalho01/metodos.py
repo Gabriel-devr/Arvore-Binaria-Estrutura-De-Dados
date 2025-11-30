@@ -64,12 +64,18 @@ class Tree:
 #========================================================================    
     #4) Para imprimir a nossa árvore com delimitadores e em ordem alfabetica optei por usar um método recursivo, assim me poupando linhas de código por meio de uma lógica baseada em stacks.
     def alphabeticalOrder(self,l1,l2):
-        currentNode=self.root
-        if (currentNode):
+        if (self.hasWords(self.root,l1,l2)):
             print(f'palavras em ordem:')
-            self.orderedMargin(currentNode,l1,l2)
+            self.orderedMargin(self.root,l1,l2)
         else:
             print('lista vazia')
+
+    def hasWords(self, node, l1,l2):
+        if (node is None):
+            return False
+        if (node.data[0] >= l1 and node.data[0] <=l2):
+            return True
+        return self.hasWords(node.left,l1,l2) or self.hasWords(node.right, l1,l2)
     
     def orderedMargin(self,currentNode,l1,l2): #Função auxiliar 4 
         if (currentNode is None):
@@ -121,6 +127,7 @@ class Tree:
                     self.transplant(y, y.right)
                     y.right = node.right
                     y.right.parent = y
+                self.transplant(node, y)
                 y.left = node.left
                 y.left.parent = y
             print(f'palavra removida: {z}')
