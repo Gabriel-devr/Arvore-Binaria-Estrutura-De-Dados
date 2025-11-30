@@ -67,18 +67,18 @@ class Tree:
         currentNode=self.root
         if (currentNode):
             print(f'palavras em ordem:')
-            self.ordenadaMargem(currentNode,l1,l2)
+            self.orderedMargin(currentNode,l1,l2)
         else:
             print('lista vazia')
     
-    def ordenadaMargem(self,currentNode,l1,l2): #Função auxiliar 4 
+    def orderedMargin(self,currentNode,l1,l2): #Função auxiliar 4 
         if (currentNode is None):
             return 
 
-        self.ordenadaMargem(currentNode.left,l1,l2)
+        self.orderedMargin(currentNode.left,l1,l2)
         if(currentNode.data[0]>=l1 and currentNode.data[0]<=l2):
             print(currentNode.data)
-        self.ordenadaMargem(currentNode.right,l1,l2)
+        self.orderedMargin(currentNode.right,l1,l2)
 #========================================================================
     #5) Bom seguindo a linha de raciocinio de remoção utilizando transplante. Primeiro precisamos verificar se o nó que queremos remover está dentro da arvore e a quantidade de filhos que ele tem. Temos 3 casos possíveis de remoção: o nó que queremos eliminar com nenhum, 1 ou 2 filhos. O caso mais complicado é o de 2 filhos onde temos que realizar o transplante do sucessor com o seu filho a direita e então acertar os ponteiros do sucessor e do seu filho conforme os ponteiros do no a ser eliminado.
     def search(self,x):
